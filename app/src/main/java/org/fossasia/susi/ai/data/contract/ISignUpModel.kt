@@ -16,7 +16,7 @@ interface ISignUpModel {
         fun onSuccess(response: Response<SignUpResponse>)
     }
 
-    fun signUp(email: String, password: String, listener: OnSignUpFinishedListener)
+    fun signUp(email: String, recaptcha: String, password: String, listener: OnSignUpFinishedListener)
 
     fun cancelSignUp()
 }

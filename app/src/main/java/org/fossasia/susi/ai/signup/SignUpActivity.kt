@@ -8,9 +8,14 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.CheckBox
 import android.widget.Toast
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.safetynet.SafetyNet
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import org.fossasia.susi.ai.R
 import org.fossasia.susi.ai.chat.ChatActivity
@@ -37,7 +42,7 @@ class SignUpActivity : AppCompatActivity(), ISignUpView {
     private lateinit var forgotPasswordProgressDialog: Dialog
     private lateinit var builder: AlertDialog.Builder
     private var checkDialog: Boolean = false
-    private var userTokenResponse = ""
+    private var userResponseToken = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +77,11 @@ class SignUpActivity : AppCompatActivity(), ISignUpView {
         builder = AlertDialog.Builder(this)
         builder.setView(R.layout.progress)
         forgotPasswordProgressDialog = builder.create()
+
+        recaptcha_checkbox.setOnClickListener{ view ->
+            if(recaptcha_checkbox.isChecked)
+                getRecaptchaResponse(view)
+        }
 
         addListeners()
 
@@ -216,7 +226,40 @@ class SignUpActivity : AppCompatActivity(), ISignUpView {
         customServerSignUp.setOnClickListener { inputUrlSignUp.visibility = if (customServerSignUp.isChecked) View.VISIBLE else View.GONE }
     }
 
-    private fun setupPasswordWatcher() {
+    private fun getRecaptchaResponse(view: View) {
+        val TAG1 = "ZYRO9922"
+        Log.e(TAG1, "VERIFYING")
+
+        SafetyNet.getClient(this).verifyWithRecaptcha("6Lcqc7kUAAAAAHBmEd-OxBpqyhI2JsZJ2lWuwGAZ")
+                .addOnSuccessListener { recaptchaTokenResponse ->
+                    // Indicates communication with reCAPTCHA service was
+                    // successful.
+                    userResponseToken = recaptchaTokenResponse.tokenResult
+                    if (!userResponseToken.isEmpty()) {
+                        Log.e(TAG1, "userResponseToken"+userResponseToken)
+                        (view as CheckBox).isClickable = false
+                    }
+                }
+                .addOnFailureListener { e ->
+                    if (e is ApiException) {
+                        // An error occurred when communicating with the
+                        // reCAPTCHA service. Refer to the status code to
+                        // handle the error appropriately.
+
+                        (view as CheckBox).isChecked = false
+                        val statusCode = e.statusCode
+                        Log.e(
+                                TAG1, "Error: " + CommonStatusCodes
+                                .getStatusCodeString(statusCode)
+                        )
+                    } else {
+                        (view as CheckBox).isChecked = false
+                        Log.e(TAG1, "Error: " + e.message)
+                    }
+                }
+    }
+
+        private fun setupPasswordWatcher() {
         password.editText?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             password.error = null
             if (!hasFocus)
@@ -269,7 +312,7 @@ class SignUpActivity : AppCompatActivity(), ISignUpView {
             val stringConfirmPassword = confirmPassword.editText?.text.toString()
             val stringURL = inputUrlSignUp.editText?.text.toString()
 
-            signUpPresenter.signUp(stringEmail, userTokenResponse, stringPassword, stringConfirmPassword, !customServerSignUp.isChecked, stringURL, acceptTermsAndConditions.isChecked, recaptcha_checkbox.isChecked)
+            signUpPresenter.signUp(stringEmail, userResponseToken, stringPassword, stringConfirmPassword, !customServerSignUp.isChecked, stringURL, acceptTermsAndConditions.isChecked, recaptcha_checkbox.isChecked)
         }
     }
 

@@ -37,6 +37,7 @@ class SignUpActivity : AppCompatActivity(), ISignUpView {
     private lateinit var forgotPasswordProgressDialog: Dialog
     private lateinit var builder: AlertDialog.Builder
     private var checkDialog: Boolean = false
+    private var userTokenResponse = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -191,6 +192,11 @@ class SignUpActivity : AppCompatActivity(), ISignUpView {
                     acceptTermsAndConditions.error = getString(R.string.accept_terms_and_conditions)
                     Toast.makeText(this@SignUpActivity, R.string.accept_terms_and_conditions, Toast.LENGTH_SHORT).show()
                 }
+                Constant.VALIDATE_RECAPTCHA -> {
+                    recaptcha_checkbox.error = Constant.VALIDATE_RECAPTCHA
+                    Toast.makeText(this@SignUpActivity, Constant.VALIDATE_RECAPTCHA, Toast.LENGTH_SHORT).show()
+
+                }
             }
         } else {
             when (what) {
@@ -263,7 +269,7 @@ class SignUpActivity : AppCompatActivity(), ISignUpView {
             val stringConfirmPassword = confirmPassword.editText?.text.toString()
             val stringURL = inputUrlSignUp.editText?.text.toString()
 
-            signUpPresenter.signUp(stringEmail, stringPassword, stringConfirmPassword, !customServerSignUp.isChecked, stringURL, acceptTermsAndConditions.isChecked)
+            signUpPresenter.signUp(stringEmail, userTokenResponse, stringPassword, stringConfirmPassword, !customServerSignUp.isChecked, stringURL, acceptTermsAndConditions.isChecked, recaptcha_checkbox.isChecked)
         }
     }
 

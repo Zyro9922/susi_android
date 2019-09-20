@@ -70,6 +70,7 @@ object Constant {
     const val NEW_PASSWORD = "newpassword"
     const val CONFIRM_PASSWORD = "confirm_password"
     const val ACCEPT_TERMS_AND_CONDITIONS = "accept_terms_and_conditions"
+    const val VALIDATE_RECAPTCHA = "verify_you_are_not_a_robot"
     const val INPUT_URL = "input_url"
 
     // Strings to get results from Database

@@ -105,6 +105,26 @@
             android:layout_marginBottom="@dimen/margin_small_medium"
             android:text="@string/accept_terms_conditions" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/recaptcha_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_medium"
+                android:text="I am not a robot" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:src="@drawable/recaptcha_logo"/>
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/signUp"
             android:layout_width="match_parent"

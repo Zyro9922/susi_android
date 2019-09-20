@@ -189,4 +189,8 @@ dependencies {
     debugImplementation "com.facebook.stetho:stetho-okhttp3:${rootConfiguration.stethoVersion}"
 
     releaseImplementation "com.github.iamareebjamal:stetho-noop:1.2.1"
+
+    //reCAPTCHA
+    implementation "com.google.android.gms:play-services-safetynet:${rootConfiguration.safetynetVersion}"
+
 }
